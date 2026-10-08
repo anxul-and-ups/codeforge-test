@@ -97,6 +97,7 @@ fun GlassSidebar(
     onNavigateHome: () -> Unit = {},
     onNavigateFolder: (String) -> Unit = {},
     onOpenFileEditor: () -> Unit,
+    onOpenHtmlViewer: () -> Unit = {},
     onOpenNameGenerator: () -> Unit,
     onOpenCommandMode: () -> Unit,
     onOpenSettings: () -> Unit,
@@ -232,6 +233,17 @@ fun GlassSidebar(
                         onClick = {
                             onClose()
                             onOpenFileEditor()
+                        }
+                    )
+
+                    // 2b. HTML Viewer (below File Editor)
+                    SidebarMenuItemPainter(
+                        icon = painterResource(R.drawable.ic_svg_html),
+                        title = "HTML Viewer",
+                        isDarkMode = isDarkMode,
+                        onClick = {
+                            onClose()
+                            onOpenHtmlViewer()
                         }
                     )
 

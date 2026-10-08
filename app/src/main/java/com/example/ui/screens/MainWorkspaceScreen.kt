@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -751,30 +752,14 @@ fun MainWorkspaceScreen(
                         }
                     }
                 } else {
-                    // key(selectedFolder): a new list per folder, so every folder switch replays the
-                    // subtle staggered fade / slide-up (this has nothing to do with the editor).
-                    androidx.compose.runtime.key(selectedFolder) {
+                    // Plain list: no per-folder replay animation (the old staggered "wave" made folder
+                    // switching lag because every card was rebuilt and animated at once).
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(bottom = 80.dp)
                     ) {
-                        itemsIndexed(filteredNotes, key = { _, note -> note.id }) { index, note ->
-                            // Staggered fade + slide-in. MutableTransitionState(false -> true)
-                            // makes the enter animation actually run on first composition.
-                            // Delay is capped so items far down the list don't wait seconds.
-                            val enterState = remember(note.id) {
-                                MutableTransitionState(false).apply { targetState = true }
-                            }
-                            val staggerDelay = index.coerceAtMost(8) * 60
-                            AnimatedVisibility(
-                                visibleState = enterState,
-                                enter = fadeIn(tween(350, delayMillis = staggerDelay)) +
-                                    slideInVertically(
-                                        tween(350, delayMillis = staggerDelay),
-                                        initialOffsetY = { it / 3 }
-                                    )
-                            ) {
+                        items(filteredNotes, key = { it.id }) { note ->
                             CompactNoteCard(
                                 note = note,
                                 hazeState = hazeState,
@@ -798,9 +783,7 @@ fun MainWorkspaceScreen(
                                 },
                                 onCopy = {}
                             )
-                            }
                         }
-                    }
                     }
                 }
                 }

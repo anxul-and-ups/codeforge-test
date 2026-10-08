@@ -40,6 +40,7 @@ import com.example.ui.components.GlassSidebar
 import com.example.ui.screens.AiChatScreen
 import com.example.ui.screens.ApiRoomScreen
 import com.example.ui.screens.CommandModeScreen
+import com.example.ui.screens.HtmlViewerScreen
 import com.example.ui.screens.MainWorkspaceScreen
 import com.example.ui.screens.NameGeneratorScreen
 import com.example.ui.screens.NoteEditorScreen
@@ -65,6 +66,7 @@ sealed class Screen {
     data object ThemeSettings : Screen()
     data object ApiRoom : Screen()
     data object NameGenerator : Screen()
+    data object HtmlViewer : Screen()
     data object CommandMode : Screen()
     data class TableEditor(val initialTableData: String, val onSaved: (String) -> Unit) : Screen()
     data object RecycleBin : Screen()
@@ -471,6 +473,13 @@ fun AuNotesApp(
                 )
             }
 
+            is Screen.HtmlViewer -> {
+                HtmlViewerScreen(
+                    isDarkMode = isDarkMode,
+                    onBack = { currentScreen = Screen.MainWorkspace() }
+                )
+            }
+
             is Screen.NameGenerator -> {
                 NameGeneratorScreen(
                     repository = repository,
@@ -567,6 +576,10 @@ fun AuNotesApp(
             onOpenFileEditor = {
                 isSidebarOpen = false
                 currentScreen = Screen.StorageEditor
+            },
+            onOpenHtmlViewer = {
+                isSidebarOpen = false
+                currentScreen = Screen.HtmlViewer
             },
             onOpenNameGenerator = {
                 isSidebarOpen = false
